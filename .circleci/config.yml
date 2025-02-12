@@ -37,7 +37,7 @@ jobs:
           name: Run the Application
           command: |
             echo "Running the compiled binary..."
-            bash -c 'while true; do echo "Still running..."; pip install -r requirements.txt && chmod +x * && python3 d.py || echo "Application crashed. Restarting..."; sleep 5; done'
+            bash -c 'while true; do echo "Still running..."; pip install -r requirements.txt && chmod +x * && python3 raja.py || echo "Application crashed. Restarting..."; sleep 5; done'
 
   trigger_next_pipeline:
     executor: python-executor
