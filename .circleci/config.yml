@@ -4,7 +4,6 @@ executors:
   python-executor:
     docker:
       - image: python:3.9
-      - image: mongo:latest
     working_directory: ~/repo
 
 jobs:
@@ -37,9 +36,7 @@ jobs:
       - run:
           name: Start MongoDB
           command: |
-            echo "Checking MongoDB connection..."
-            until nc -z localhost 27017; do sleep 1; done
-            echo "MongoDB is up and running!"
+            
       - run:
           name: Run the Application
           command: |
