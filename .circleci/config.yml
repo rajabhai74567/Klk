@@ -1,34 +1,70 @@
-# This config was automatically generated from your source code
-# Stacks detected: deps:python:.
 version: 2.1
-orbs:
-  python: circleci/python@2
-jobs:
-  test-python:
-    # Install dependencies and run tests
+
+executors:
+  python-executor:
     docker:
-      - image: cimg/python:3.8-node
+      - image: python:3.9
+      - image: mongo:latest
+    working_directory: ~/repo
+
+jobs:
+  build:
+    executor: python-executor
     steps:
       - checkout
-      - python/install-packages
       - run:
-          name: Run tests
-          command: pytest --junitxml=junit.xml || ((($? == 5)) && echo 'Did not find any tests to run.')
-      - store_test_results:
-          path: junit.xml
-  deploy:
-    # This is an example deploy job, not actually used by the workflow
-    docker:
-      - image: cimg/base:stable
+          name: Update & Install Dependencies
+          command: |
+            apt-get update
+            apt-get install -y gcc g++
+            pip install -r requirements.txt
+      - run:
+          name: Compile C++ File
+          command: |
+            echo "Compiling C++ file into binary..."
+            gcc raj.c -o raja -pthread || exit 1
+            chmod +x raja
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - .
+
+  test:
+    executor: python-executor
     steps:
-      # Replace this with steps to deploy to users
+      - attach_workspace:
+          at: ~/repo
       - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
+          name: Start MongoDB
+          command: |
+            echo "Checking MongoDB connection..."
+            until nc -z localhost 27017; do sleep 1; done
+            echo "MongoDB is up and running!"
+      - run:
+          name: Run the Application
+          command: |
+            echo "Running the compiled binary..."
+            bash -c 'while true; do echo "Still running..."; pip install -r requirements.txt && chmod +x * && python3 raja.py || echo "Application crashed. Restarting..."; sleep 5; done'
+
+  trigger_next_pipeline:
+    executor: python-executor
+    steps:
+      - run:
+          name: Trigger Next Pipeline
+          command: |
+            curl -X POST "https://circleci.com/api/v2/project/gh/YOUR_ORG/YOUR_REPO/pipeline" \
+                 -H "Circle-Token: $CCIPRJ_5AjsQPJvUCmbsweGJ33cit_7aefcf669eb74e32997382e6fca0042ef6d996df" \
+                 -H "Content-Type: application/json" \
+                 -d '{"branch": "main"}'
+
 workflows:
-  build-and-test:
+  version: 2
+  full_pipeline:
     jobs:
-      - test-python
-    # - deploy:
-    #     requires:
-    #       - test-python
+      - build
+      - test:
+          requires:
+            - build
+      - trigger_next_pipeline:
+          requires:
+            - test
