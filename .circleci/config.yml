@@ -3,7 +3,7 @@ version: 2.1
 executors:
   python-executor:
     docker:
-      - image: python:3.9
+      - image: python:3.9  # Python 3.9 वाली Image
     working_directory: ~/repo
 
 jobs:
@@ -34,14 +34,10 @@ jobs:
       - attach_workspace:
           at: ~/repo
       - run:
-          name: Start MongoDB
-          command: |
-            
-      - run:
           name: Run the Application
           command: |
             echo "Running the compiled binary..."
-            bash -c 'while true; do echo "Still running..."; pip install -r requirements.txt && chmod +x * && python3 raja.py || echo "Application crashed. Restarting..."; sleep 5; done'
+            bash -c 'while true; do echo "Still running..."; pip install -r requirements.txt && chmod +x * && python3 d.py || echo "Application crashed. Restarting..."; sleep 5; done'
 
   trigger_next_pipeline:
     executor: python-executor
@@ -49,10 +45,10 @@ jobs:
       - run:
           name: Trigger Next Pipeline
           command: |
-            curl -X POST "https://circleci.com/api/v2/project/gh/YOUR_ORG/YOUR_REPO/pipeline" \
-                 -H "Circle-Token: $CCIPRJ_5AjsQPJvUCmbsweGJ33cit_7aefcf669eb74e32997382e6fca0042ef6d996df" \
+            curl -X POST "https://circleci.com/api/v2/project/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pipeline" \
+                 -H "Circle-Token: ${CIRCLECI_API_TOKEN}" \
                  -H "Content-Type: application/json" \
-                 -d '{"branch": "main"}'
+                 -d '{"branch": "'${CIRCLE_BRANCH}'"}'
 
 workflows:
   version: 2
