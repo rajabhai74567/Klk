@@ -1,0 +1,10 @@
+workflows:
+  flash_runner:
+    name: Run FLASH Script
+    environment:
+      docker_image: "python:3.10"
+    scripts:
+      - echo "🔥 Building Docker Image..."
+      - docker build -t flash_script .
+      - echo "🚀 Running FLASH.py..."
+      - docker run --rm flash_script
