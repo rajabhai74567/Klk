@@ -1,0 +1,8 @@
+workflows:
+  build:
+    name: Build Flutter Project
+    environment:
+      flutter: stable
+    scripts:
+      - cd /path/to/flutter/project  # सही पाथ पे जाओ
+      - flutter pub get  # डिपेंडेंसी इंस्टॉल करो
