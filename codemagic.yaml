@@ -1,10 +1,16 @@
 workflows:
-  flash_runner:
-    name: Run FLASH Script
+  flutter_python_build:
+    name: Flutter + Python Build
     environment:
-      docker_image: "python:3.10"
+      flutter: stable
     scripts:
-      - echo "🔥 Building Docker Image..."
-      - docker build -t flash_script .
-      - echo "🚀 Running FLASH.py..."
-      - docker run --rm flash_script
+      - echo "🚀 Checking Flutter Version..."
+      - flutter --version
+      - echo "🔥 Running Flutter Pub Get..."
+      - flutter pub get
+      - echo "⚡ Running Python Script..."
+      - python3 FLASH.py
+      - echo "📱 Building Flutter APK..."
+      - flutter build apk
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
